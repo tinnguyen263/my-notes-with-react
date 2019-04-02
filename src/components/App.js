@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
-import logo from '../assets/logo.svg';
+import 'simplebar/dist/simplebar.min.css';
 import './App.css';
+
+import Content from './Content'
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+      <div className="app">
+        <header className="app-header">
+          <div className="app-name main-layout">App Name</div>
         </header>
+        <main>
+          <Content/>
+        </main>
+        <div className="app-actions">
+          <div className="app-actions--items main-layout">
+            <div className="action fab-bar">1</div>
+            <div className="action fab-button">2</div>
+          </div>
+        </div>
       </div>
     );
   }
