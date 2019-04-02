@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import 'simplebar/dist/simplebar.min.css';
-import './App.css';
-
 import Content from './Content'
 
 class App extends Component {
   render() {
     return (
-      <div className="app">
+      <div id="app">
         <header className="app-header">
           <div className="app-name main-layout">App Name</div>
         </header>
