@@ -12,9 +12,19 @@ workflow "Deploy to Github Pages" {
   resolves = ["Deploy to gh-pages"]
 }
 
-action "master branch only" {
+action "test branch only" {
   uses = "actions/bin/filter@master"
-  args = "branch master"
+  args = "branch test/gh-actions-auto-deploy"
+  secrets = ["GITHUB_DEPLOY_TOKEN"]
+
+  # workflow "Github Pages auto deploy" {
+  #   resolves = ["Deploy to GitHub Pages"]
+  #   on = "push"
+  # }
+
+  # action "Deploy to GitHub Pages" {
+  #   uses = "JamesIves/github-pages-deploy-action@1.1.1"
+  # }
 }
 
 action "Deploy to gh-pages" {
@@ -25,7 +35,16 @@ action "Deploy to gh-pages" {
     FOLDER = "build"
   }
   secrets = [
-    "GITHUB_TOKEN",
+    "GITHUB_DEPLOY_TOKEN",
   ]
-  needs = ["master branch only"]
+  needs = ["test branch only"]
+
+  # workflow "Github Pages auto deploy" {
+  #   resolves = ["Deploy to GitHub Pages"]
+  #   on = "push"
+  # }
+
+  # action "Deploy to GitHub Pages" {
+  #   uses = "JamesIves/github-pages-deploy-action@1.1.1"
+  # }
 }
