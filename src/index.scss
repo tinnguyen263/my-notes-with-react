@@ -1,3 +1,22 @@
+// LIGHT THEME
+:root {
+  --color-background: #eeeeee;
+  --color-content-background: #FFFFFF;
+  --color-accent: #ffc107;
+  --color-content: #000000;
+  --content-max-width: 722px;
+}
+
+// DARK THEME
+:root {
+  --color-background: #424242;
+  --color-content-background: #616161;
+  --color-accent: #f9a825;
+  --color-content: #FAFAFA;
+  --content-max-width: 722px;
+}
+
+// GLOBAL
 body {
   margin: 0;
   padding: 0;
@@ -6,17 +25,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #E5E5E5;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
-
-:root {
-  --color-accent: #FFCD92;
-  --content-max-width: 722px;
+  background-color: var(--color-background);
+  color: var(--color-content);
 }
 
 #app, main {
@@ -25,7 +35,9 @@ code {
   overflow: hidden;
 }
 
-.main-layout {
+// Mixins
+
+@mixin hasMainLayoutBoundary() {
   width: 100%;
   max-width: var(--content-max-width);
   margin: 0 auto;
@@ -33,27 +45,40 @@ code {
   box-sizing: border-box;
 }
 
+@mixin card() {
+  border-radius: 8px;
+  background-color: var(--color-content-background);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+// HEADER
 .app-header {
   width: 100%;
   height: 128px;
   position: fixed;
   display: flex;
   align-items: center;
-  .app-name {
-    width: 100%;
-    height: 56px;
-    line-height: 56px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 36px;
-    font-family: cursive;
+  .app-header--content {
+    @include hasMainLayoutBoundary();
   }
 }
 
+.app-name {
+  width: 100%;
+  height: 56px;
+  line-height: 56px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 36px;
+  font-family: cursive;
+}
+
+// CONTENT
 .app-content {
   height: 100vh;
   overflow-y: auto;
-  .app-content-content {
+  .app-content--content {
+    @include hasMainLayoutBoundary();
     margin-top: 128px;
     margin-bottom: 128px;
   }
@@ -64,23 +89,31 @@ code {
   grid-gap: 24px;
   grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
   grid-auto-rows: 40px;
+  //&.has-selected {
+  //  grid-template-columns: 100%;
+  //  grid-auto-rows: 100%;
+  //}
 }
 
 .note {
+  @include card();
   grid-row-end: span 4;
   display: inline-block;
-  border-radius: 8px;
-  background-color: white;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.6s ease-in-out;
+  &.selected {
+    background-color: #eeeeee;
+  }
 }
 
+
+// ACTIONS
 .app-actions {
   width: 100%;
   height: 64px;
   position: fixed;
   bottom: 32px;
-
-  .app-actions--items {
+  .app-actions--content {
+    @include hasMainLayoutBoundary();
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -100,16 +133,19 @@ code {
   }
 }
 
-.fab-button {
-  width: 56px;
-  height: 56px;
-  border-radius: 28px;
-  background-color: var(--color-accent);
-}
-.fab-bar {
-  width: 100%;
-  height: 56px;
-  border-radius: 8px;
-  background-color: var(--color-accent);
-}
 
+
+.action {
+  &.action-button {
+    width: 56px;
+    height: 56px;
+    border-radius: 28px;
+    background-color: var(--color-accent);
+  }
+  &.action-bar {
+    width: 100%;
+    height: 56px;
+    border-radius: 8px;
+    background-color: var(--color-accent);
+  }
+}

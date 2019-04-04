@@ -1,25 +1,23 @@
 import React, { Component } from 'react';
 import Content from './Content'
+import Header from "./Header";
+import Actions from "./Actions";
+import Action from "./Action";
+import AppName from "./AppName";
 
-class App extends Component {
+export default class App extends Component {
   render() {
     return (
       <div id="app">
-        <header className="app-header">
-          <div className="app-name main-layout">App Name</div>
-        </header>
-        <main>
-          <Content/>
-        </main>
-        <div className="app-actions">
-          <div className="app-actions--items main-layout">
-            <div className="action fab-bar">1</div>
-            <div className="action fab-button">2</div>
-          </div>
-        </div>
+        <Header className="app-header">
+          <AppName/>
+        </Header>
+        <Content className="app-content"/>
+        <Actions className="app-actions">
+          <Action componentType="bar">1</Action>
+          <Action componentType="button">2</Action>
+        </Actions>
       </div>
     );
   }
 }
-
-export default App;
