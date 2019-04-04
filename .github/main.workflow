@@ -15,7 +15,9 @@ workflow "Deploy to Github Pages" {
 action "test branch only" {
   uses = "actions/bin/filter@master"
   args = "branch test/gh-actions-auto-deploy"
-  secrets = ["GITHUB_DEPLOY_TOKEN"]
+  secrets = [
+    "ACTIONS_DEPLOY_TOKEN",
+  ]
 
   # workflow "Github Pages auto deploy" {
   #   resolves = ["Deploy to GitHub Pages"]
@@ -35,7 +37,7 @@ action "Deploy to gh-pages" {
     FOLDER = "build"
   }
   secrets = [
-    "GITHUB_DEPLOY_TOKEN",
+    "ACTIONS_DEPLOY_TOKEN",
   ]
   needs = ["test branch only"]
 
