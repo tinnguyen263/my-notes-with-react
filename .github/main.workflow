@@ -7,7 +7,6 @@
 #   uses = "JamesIves/github-pages-deploy-action@1.1.1"
 # }
 
-
 workflow "Deploy to Github Pages" {
   on = "push"
   resolves = ["Deploy to gh-pages"]
@@ -25,6 +24,8 @@ action "Deploy to gh-pages" {
     BUILD_SCRIPT = "yarn install && yarn run build"
     FOLDER = "build"
   }
-  secrets = ["145e593ab737eb926635ef287b4d3e8ad6fbf5fd"]
+  secrets = [
+    "GITHUB_TOKEN",
+  ]
   needs = ["master branch only"]
 }
