@@ -1,14 +1,19 @@
+const removePx = value => (typeof value === "string" && value.endsWith('px')) ? +value.substring(0, value.length - 2) : +value;
+
 const getPosition = element => {
   return {
-    x: element.offsetTop,
-    y: element.offsetLeft
+    x: removePx(element.offsetTop),
+    y: removePx(element.offsetLeft)
   }
 };
 
 const getSize = element => {
+  const styles = window.getComputedStyle(element);
+  const width = styles.width;
+  const height = styles.height;
   return {
-    width: 0,
-    height: 0
+    width: removePx(width),
+    height: removePx(height)
   }
 };
 
