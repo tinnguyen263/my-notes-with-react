@@ -1,4 +1,4 @@
-action "Run on specific branch only" {
+action "Run on specific branch" {
   uses = "actions/bin/filter@master"
   args = "branch test/auto-build"
 }
@@ -6,7 +6,7 @@ action "Run on specific branch only" {
 action "Install" {
   uses = "actions/npm@e7aaefe"
   args = "install"
-  needs = ["Run on specific branch only" ]
+  needs = ["Run on specific branch" ]
 }
 
 action "Build" {
