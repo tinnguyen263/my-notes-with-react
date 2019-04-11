@@ -1,52 +1,32 @@
-# workflow "Github Pages auto deploy" {
-#   resolves = ["Deploy to GitHub Pages"]
-#   on = "push"
-# }
-
-# action "Deploy to GitHub Pages" {
-#   uses = "JamesIves/github-pages-deploy-action@1.1.1"
-# }
-
-workflow "Deploy to Github Pages" {
-  on = "push"
-  resolves = ["Deploy to gh-pages"]
-}
-
-action "test branch only" {
+action "Run on specific branch" {
   uses = "actions/bin/filter@master"
-  args = "branch test/gh-actions-auto-deploy"
-  secrets = [
-    "ACTIONS_DEPLOY_TOKEN",
-  ]
-
-  # workflow "Github Pages auto deploy" {
-  #   resolves = ["Deploy to GitHub Pages"]
-  #   on = "push"
-  # }
-
-  # action "Deploy to GitHub Pages" {
-  #   uses = "JamesIves/github-pages-deploy-action@1.1.1"
-  # }
+  args = "branch develop"
 }
 
-action "Deploy to gh-pages" {
-  uses = "JamesIves/github-pages-deploy-action@master"
-  env = {
-    BRANCH = "gh-pages"
-    BUILD_SCRIPT = "yarn install && yarn run build"
-    FOLDER = "build"
-  }
+action "Install" {
+  uses = "actions/npm@e7aaefe"
+  args = "install"
+  needs = ["Run on specific branch" ]
+}
+
+action "Build" {
+  uses = "actions/npm@e7aaefe"
+  args = "run build"
+  needs = ["Install"]
+}
+
+action "Deploy" {
+  uses = "nchaulet/github-action-gh-pages@master"
   secrets = [
-    "ACTIONS_DEPLOY_TOKEN",
+    "GITHUB_TOKEN",
   ]
-  needs = ["test branch only"]
+  needs = ["Build"]
+  env = {
+    PUBLIC_PATH = "build"
+  }
+}
 
-  # workflow "Github Pages auto deploy" {
-  #   resolves = ["Deploy to GitHub Pages"]
-  #   on = "push"
-  # }
-
-  # action "Deploy to GitHub Pages" {
-  #   uses = "JamesIves/github-pages-deploy-action@1.1.1"
-  # }
+workflow "Build and deploy GitHub Pages" {
+  on = "push"
+  resolves = ["Deploy"]
 }
