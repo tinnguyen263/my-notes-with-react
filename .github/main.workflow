@@ -6,7 +6,7 @@ action "Run on specific branch" {
 action "Install" {
   uses = "actions/npm@e7aaefe"
   args = "install"
-#   needs = ["Run on specific branch" ]
+  needs = ["Run on specific branch" ]
 }
 
 action "Build" {
@@ -26,7 +26,7 @@ action "Deploy" {
   }
 }
 
-workflow "Build and deploy" {
+workflow "Build and deploy GitHub Pages" {
   on = "push"
   resolves = ["Deploy"]
 }
