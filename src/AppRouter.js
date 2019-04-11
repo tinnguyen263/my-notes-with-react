@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Link, Switch } from "react-router-dom";
 import NotePage from "./views/NotePage";
 import HomePage from "./views/HomePage";
 
 export default class AppRouter extends Component {
   render() {
     return (
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <Switch>
           <Route exact path="/" component={routeResolver.homePage} />
           <Route path="/note/:id" component={routeResolver.noteDetailPage} />
