@@ -2,8 +2,8 @@ const removePx = value => (typeof value === "string" && value.endsWith('px')) ? 
 
 const getPosition = element => {
   return {
-    x: removePx(element.offsetTop),
-    y: removePx(element.offsetLeft)
+    top: removePx(element.offsetTop),
+    left: removePx(element.offsetLeft)
   }
 };
 
