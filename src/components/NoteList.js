@@ -114,7 +114,10 @@ export default class NoteList extends Component {
       left: +overlayPosition.left,
     };
     const biggestDistance = Object.values(maximumExpandSize).sort().pop();
-    const calculateSpaceToAdd = (progress, maximumSpace) => (progress * biggestDistance) < maximumSpace ? (progress * biggestDistance) : maximumSpace;
+    const calculateSpaceToAdd = (progress, maximumSpace) => {
+      const spaceToAdd = progress* biggestDistance;
+      return spaceToAdd < maximumSpace ? spaceToAdd : maximumSpace;
+    };
 
     const step = progress => {
       const newOverlayExpandSize = {
@@ -135,7 +138,7 @@ export default class NoteList extends Component {
       moveTo(overlay, newOverlayPosition.top, newOverlayPosition.left);
     };
 
-    createAnimationFrame(step, 200)
+    createAnimationFrame(step, 200, easeInOut)
   }
 
   async _collapseOverlay() {
@@ -173,14 +176,14 @@ const resizeTo = (element, width, height) => {
 
 };
 
+const easeInOut = t => Math.round(((Math.sin((t - 0.5)*3.1412) + 1)/2) * 1000) / 1000;
 
-
-const createAnimationFrame = (stepper, duration) => new Promise(resolve => {
+const createAnimationFrame = (stepper, duration, timingFunction = t => t) => new Promise(resolve => {
   let startMoment = null;
   const frame = (timestamp) => {
     if (!startMoment) startMoment = timestamp;
     const passedTime = timestamp - startMoment;
-    let progressInPercent = passedTime / duration;
+    let progressInPercent = timingFunction(passedTime / duration);
     if (progressInPercent > 1) progressInPercent = 1;
     const shouldAnimationContinue = progressInPercent < 1;
     stepper(progressInPercent);
