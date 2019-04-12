@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Note from './Note';
 import {getPosition, getSize} from "../utils/index.";
+import {Animation, TimingFunctions} from "../utils/animation";
 
 export default class NoteList extends Component {
 
@@ -90,14 +91,6 @@ export default class NoteList extends Component {
   }
 
   async _expandOverlay() {
-    // const container = this.containerRef.current;
-    // const overlay = this.overlayRef.current;
-    // const containerSize = getSize(container);
-    //
-    // resizeTo(overlay, containerSize.width, containerSize.height);
-    // moveTo(overlay, 0, 0);
-    // return wait(400)
-
     const card = this.state.selectedNoteElement;
     const container = this.containerRef.current;
     const containerSize = getSize(container);
@@ -138,7 +131,8 @@ export default class NoteList extends Component {
       moveTo(overlay, newOverlayPosition.top, newOverlayPosition.left);
     };
 
-    createAnimationFrame(step, 200, easeInOut)
+    const expandAnimation = new Animation(step, 200, TimingFunctions.EaseInOut);
+    return expandAnimation.start()
   }
 
   async _collapseOverlay() {
@@ -175,26 +169,6 @@ const resizeTo = (element, width, height) => {
   element.style.maxHeight = height;
 
 };
-
-const easeInOut = t => Math.round(((Math.sin((t - 0.5)*3.1412) + 1)/2) * 1000) / 1000;
-
-const createAnimationFrame = (stepper, duration, timingFunction = t => t) => new Promise(resolve => {
-  let startMoment = null;
-  const frame = (timestamp) => {
-    if (!startMoment) startMoment = timestamp;
-    const passedTime = timestamp - startMoment;
-    let progressInPercent = timingFunction(passedTime / duration);
-    if (progressInPercent > 1) progressInPercent = 1;
-    const shouldAnimationContinue = progressInPercent < 1;
-    stepper(progressInPercent);
-    if (shouldAnimationContinue) {
-      window.requestAnimationFrame(frame);
-    } else {
-      resolve()
-    }
-  };
-  window.requestAnimationFrame(frame);
-});
 
 const createMockNote = () => {
   const id = Math.random();
