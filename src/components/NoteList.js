@@ -67,7 +67,7 @@ export default class NoteList extends Component {
     const cardPosition = getPosition(card);
     disableAnimation(overlay);
     resizeTo(overlay, cardSize.width, cardSize.height);
-    moveTo(overlay, cardPosition.x, cardPosition.y);
+    moveTo(overlay, cardPosition.top, cardPosition.left);
     overlay.style.visibility = 'unset';
     await wait(0);
     enableAnimation(overlay);
@@ -107,37 +107,32 @@ export default class NoteList extends Component {
     const overlayPosition = getPosition(card);
     const overlaySize = getSize(card);
 
-    console.log(overlayPosition);
-
-    const expandSize = {
-      top: +overlayPosition.x,
-      right: containerSize.width - (overlayPosition.y + overlaySize.width),
-      bottom: containerSize.height - (overlayPosition.x + overlaySize.height),
-      left: +overlayPosition.y,
+    const maximumExpandSize = {
+      top: +overlayPosition.top,
+      right: containerSize.width - (overlayPosition.left + overlaySize.width),
+      bottom: containerSize.height - (overlayPosition.top + overlaySize.height),
+      left: +overlayPosition.left,
     };
-    const biggestDistance = Object.values(expandSize).sort()[0];
-    const calculate = (maxSize, progress) => {
-      const tryValue = biggestDistance * progress;
-      return tryValue < maxSize ? tryValue : maxSize
-    };
+    const biggestDistance = Object.values(maximumExpandSize).sort().pop();
+    const calculateSpaceToAdd = (progress, maximumSpace) => (progress * biggestDistance) < maximumSpace ? (progress * biggestDistance) : maximumSpace;
 
     const step = progress => {
-      const newExpandSize = {
-        top: calculate(expandSize.top, progress),
-        right: calculate(expandSize.right, progress),
-        bottom: calculate(expandSize.bottom, progress),
-        left: calculate(expandSize.left, progress),
+      const newOverlayExpandSize = {
+        top: calculateSpaceToAdd(progress, maximumExpandSize.top),
+        right: calculateSpaceToAdd(progress, maximumExpandSize.right),
+        bottom: calculateSpaceToAdd(progress, maximumExpandSize.bottom),
+        left: calculateSpaceToAdd(progress, maximumExpandSize.left),
       };
-      const newPosition = {
-        y: overlayPosition.y - newExpandSize.left,
-        x: overlayPosition.x - newExpandSize.top
+      const newOverlayPosition = {
+        top: overlayPosition.top - newOverlayExpandSize.top,
+        left: overlayPosition.left - newOverlayExpandSize.left
       };
       const newSize = {
-        width: overlaySize.width + newExpandSize.left + newExpandSize.right,
-        height: overlaySize.height + newExpandSize.top + newExpandSize.bottom
+        width: overlaySize.width + newOverlayExpandSize.left + newOverlayExpandSize.right,
+        height: overlaySize.height + newOverlayExpandSize.top + newOverlayExpandSize.bottom
       };
       resizeTo(overlay, newSize.width, newSize.height);
-      moveTo(overlay, newPosition.y, newPosition.x);
+      moveTo(overlay, newOverlayPosition.top, newOverlayPosition.left);
     };
 
     createAnimationFrame(step, 200)
@@ -178,22 +173,24 @@ const resizeTo = (element, width, height) => {
 
 };
 
+
+
 const createAnimationFrame = (stepper, duration) => new Promise(resolve => {
-  let start = null;
-  function step(timestamp) {
-    if (!start) start = timestamp;
-    const passedTime = timestamp - start;
-    let progress = passedTime / duration;
-    if (progress > 1) progress = 1;
-    stepper(progress);
-    const shouldAnimationContinue = progress < 1;
+  let startMoment = null;
+  const frame = (timestamp) => {
+    if (!startMoment) startMoment = timestamp;
+    const passedTime = timestamp - startMoment;
+    let progressInPercent = passedTime / duration;
+    if (progressInPercent > 1) progressInPercent = 1;
+    const shouldAnimationContinue = progressInPercent < 1;
+    stepper(progressInPercent);
     if (shouldAnimationContinue) {
-      window.requestAnimationFrame(step);
+      window.requestAnimationFrame(frame);
     } else {
       resolve()
     }
-  }
-  window.requestAnimationFrame(step);
+  };
+  window.requestAnimationFrame(frame);
 });
 
 const createMockNote = () => {
