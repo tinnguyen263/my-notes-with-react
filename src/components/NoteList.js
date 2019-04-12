@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Note from './Note';
-import {getPosition, getSize} from "../utils/index.";
-import {Animation, TimingFunctions} from "../utils/animation";
+import {getPosition, getSize, moveElement, resizeElement} from "../utils/element";
+import {createExpandAnimation} from "../utils/animations";
 
 export default class NoteList extends Component {
 
@@ -17,7 +17,7 @@ export default class NoteList extends Component {
   }
 
   render() {
-    const computeNoteClasses = note => this.state.selectedNote ? note.id === this.state.selectedNote.id ? 'selected' : 'gone' : '';
+    const computeNoteClasses = note => this.state.selectedNote ? note.id === this.state.selectedNote.id ? 'selected' : 'not-selected' : '';
     return (
       <div className={`note-list ${this.state.selectedNote && 'has-selected'} ${this.props.className}`}
            ref={this.containerRef}>
@@ -66,83 +66,45 @@ export default class NoteList extends Component {
     const overlay = this.overlayRef.current;
     const cardSize = getSize(card);
     const cardPosition = getPosition(card);
-    disableAnimation(overlay);
-    resizeTo(overlay, cardSize.width, cardSize.height);
-    moveTo(overlay, cardPosition.top, cardPosition.left);
-    overlay.style.visibility = 'unset';
+    // silently place overlay over selected note
+    overlay.classList.add('no-transition');
+    overlay.classList.remove('gone');
+    resizeElement(overlay, cardSize.width, cardSize.height);
+    moveElement(overlay, cardPosition.top, cardPosition.left);
     await wait(0);
-    enableAnimation(overlay);
+    // the show it with animation
+    overlay.classList.remove('no-transition');
     overlay.classList.remove('hide');
     return wait(200)
   }
 
   async _hideOverlay() {
     const overlay = this.overlayRef.current;
-
-    enableAnimation(overlay);
+    // hide overlay with animation
+    overlay.classList.remove('no-transition');
     overlay.classList.add('hide');
-    await wait(200, () => {
-      disableAnimation(overlay);
-      overlay.style.visibility = 'hidden';
-      resizeTo(overlay, 0, 0);
-      moveTo(overlay, 0, 0);
-    });
-
+    await wait(200);
+    // then silently reset it
+    overlay.classList.add('no-transition');
+    overlay.classList.add('gone');
+    resizeElement(overlay, 0, 0);
+    moveElement(overlay, 0, 0);
   }
 
   async _expandOverlay() {
     const card = this.state.selectedNoteElement;
     const container = this.containerRef.current;
-    const containerSize = getSize(container);
-
     const overlay = this.overlayRef.current;
-
-    const overlayPosition = getPosition(card);
-    const overlaySize = getSize(card);
-
-    const maximumExpandSize = {
-      top: +overlayPosition.top,
-      right: containerSize.width - (overlayPosition.left + overlaySize.width),
-      bottom: containerSize.height - (overlayPosition.top + overlaySize.height),
-      left: +overlayPosition.left,
-    };
-    const biggestDistance = Object.values(maximumExpandSize).sort().pop();
-    const calculateSpaceToAdd = (progress, maximumSpace) => {
-      const spaceToAdd = progress* biggestDistance;
-      return spaceToAdd < maximumSpace ? spaceToAdd : maximumSpace;
-    };
-
-    const step = progress => {
-      const newOverlayExpandSize = {
-        top: calculateSpaceToAdd(progress, maximumExpandSize.top),
-        right: calculateSpaceToAdd(progress, maximumExpandSize.right),
-        bottom: calculateSpaceToAdd(progress, maximumExpandSize.bottom),
-        left: calculateSpaceToAdd(progress, maximumExpandSize.left),
-      };
-      const newOverlayPosition = {
-        top: overlayPosition.top - newOverlayExpandSize.top,
-        left: overlayPosition.left - newOverlayExpandSize.left
-      };
-      const newSize = {
-        width: overlaySize.width + newOverlayExpandSize.left + newOverlayExpandSize.right,
-        height: overlaySize.height + newOverlayExpandSize.top + newOverlayExpandSize.bottom
-      };
-      resizeTo(overlay, newSize.width, newSize.height);
-      moveTo(overlay, newOverlayPosition.top, newOverlayPosition.left);
-    };
-
-    const expandAnimation = new Animation(step, 200, TimingFunctions.EaseInOut);
+    const expandAnimation = createExpandAnimation(card, overlay, container);
     return expandAnimation.start()
   }
 
   async _collapseOverlay() {
-    // const card = this.state.selectedNoteElement;
-    // const overlay = this.overlayRef.current;
-    // const cardSize = getSize(card);
-    // const cardPosition = getPosition(card);
-    // resizeTo(overlay, cardSize.width, cardSize.height);
-    // moveTo(overlay, cardPosition.x, cardPosition.y);
-    // return wait(400)
+    const card = this.state.selectedNoteElement;
+    const container = this.containerRef.current;
+    const overlay = this.overlayRef.current;
+    const expandAnimation = createExpandAnimation(card, overlay, container);
+    return expandAnimation.startReverse()
   }
 }
 
@@ -150,25 +112,6 @@ const wait = (duration, callback) => new Promise((resolve) => setTimeout(() => {
   callback && callback();
   resolve();
 }, duration));
-
-const enableAnimation = element => {
-  element.classList.remove('no-transition');
-};
-const disableAnimation = element => {
-  element.classList.add('no-transition');
-};
-const moveTo = (element, top, left) => {
-  top += 'px';
-  left += 'px';
-  element.style.transform = `translate3D(${left}, ${top}, 0)`;
-};
-const resizeTo = (element, width, height) => {
-  width += 'px';
-  height += 'px';
-  element.style.maxWidth = width;
-  element.style.maxHeight = height;
-
-};
 
 const createMockNote = () => {
   const id = Math.random();
