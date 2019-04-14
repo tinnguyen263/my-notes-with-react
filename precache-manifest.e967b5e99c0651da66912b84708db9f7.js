@@ -4,23 +4,23 @@ self.__precacheManifest = [
     "url": "/my-notes-with-react/static/js/runtime~main.2351e397.js"
   },
   {
-    "revision": "57b972be95032dbbaace",
-    "url": "/my-notes-with-react/static/js/main.0edbbd07.chunk.js"
+    "revision": "25695ab141089a7d08a1",
+    "url": "/my-notes-with-react/static/js/main.ddb639ca.chunk.js"
   },
   {
-    "revision": "b2f98010c8c3eb6de520",
-    "url": "/my-notes-with-react/static/js/2.ec40f2b3.chunk.js"
+    "revision": "2a521ef98607f4122f31",
+    "url": "/my-notes-with-react/static/js/2.94353778.chunk.js"
   },
   {
-    "revision": "57b972be95032dbbaace",
+    "revision": "25695ab141089a7d08a1",
     "url": "/my-notes-with-react/static/css/main.99f96c1a.chunk.css"
   },
   {
-    "revision": "b2f98010c8c3eb6de520",
+    "revision": "2a521ef98607f4122f31",
     "url": "/my-notes-with-react/static/css/2.977b24ad.chunk.css"
   },
   {
-    "revision": "1b4dcb4d70d4be007c17ed1f26693925",
+    "revision": "30f9d71a5b9ead42b65fcaa53cded5b7",
     "url": "/my-notes-with-react/index.html"
   }
 ];
