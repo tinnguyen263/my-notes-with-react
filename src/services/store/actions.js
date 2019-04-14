@@ -1,23 +1,23 @@
-import {ActionTypes} from "./action-types";
+import {ActionTypes} from './action-types';
 
-export const createNote = note => ({
+export const createNote = (note) => ({
   type: ActionTypes.DATA_NOTE_CREATE,
-  payload: note
+  payload: note,
 });
 
-export const updateNote = note => ({
+export const updateNote = (note) => ({
   type: ActionTypes.DATA_NOTE_UPDATE,
-  payload: note
+  payload: note,
 });
 
-export const deleteNote = note => ({
+export const deleteNote = (note) => ({
   type: ActionTypes.DATA_NOTE_DELETE,
-  payload: note
+  payload: note,
 });
 
-export const deleteById = noteId => ({
+export const deleteById = (noteId) => ({
   type: ActionTypes.DATA_NOTE_DELETE,
   payload: {
-    id: noteId
-  }
+    id: noteId,
+  },
 });

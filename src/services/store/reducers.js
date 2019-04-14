@@ -1,7 +1,7 @@
-import {initialState} from "./state";
-import {ActionTypes} from './action-types'
-import {combineReducers} from "redux";
-import {ArrayCollection} from "../../utils/collection";
+import {initialState} from './state';
+import {ActionTypes} from './action-types';
+import {combineReducers} from 'redux';
+import {ArrayCollection} from '../../utils/collection';
 
 const appReducer = (state = initialState.app, action) => {
   switch (action.type) {
@@ -26,6 +26,6 @@ const noteReducer = (state = initialState.data.notes, action) => {
 export const rootReducer = combineReducers({
   app: appReducer,
   data: combineReducers({
-    notes: noteReducer
-  })
+    notes: noteReducer,
+  }),
 });
