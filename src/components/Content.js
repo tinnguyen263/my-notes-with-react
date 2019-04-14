@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 
-export default class Content extends Component{
+export default class Content extends Component {
   render() {
     return (
       <SimpleBar className={this.props.className}>
@@ -10,6 +10,6 @@ export default class Content extends Component{
           {this.props.children}
         </div>
       </SimpleBar>
-    )
+    );
   }
 }
