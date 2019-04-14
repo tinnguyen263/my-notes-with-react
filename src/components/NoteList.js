@@ -2,14 +2,21 @@ import React, {Component} from 'react';
 import Note from './Note';
 import {getPosition, getSize, moveElement, resizeElement} from "../utils/element";
 import {createExpandAnimation} from "../utils/animations";
+import { connect } from 'react-redux'
 
-export default class NoteList extends Component {
+
+
+const mapStateToProps = state => ({
+    notes: state.data.notes
+});
+const mapDispatchToProps = (dispatch, ownProps) => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(class NoteList extends Component {
 
   constructor(props) {
     super(props);
     this.containerRef = React.createRef();
     this.state = {
-      notes: mockNotes,
       selectedNote: null,
       selectedNoteElement: null
     };
@@ -21,7 +28,7 @@ export default class NoteList extends Component {
     return (
       <div className={`note-list ${this.state.selectedNote && 'has-selected'} ${this.props.className}`}
            ref={this.containerRef}>
-        {this.state.notes.map(note =>
+        {this.props.notes.map(note =>
           <Note key={note.id}
                 id={note.id}
                 note-data={note}
@@ -106,29 +113,11 @@ export default class NoteList extends Component {
     const expandAnimation = createExpandAnimation(card, overlay, container);
     return expandAnimation.startReverse()
   }
-}
+})
 
 const wait = (duration, callback) => new Promise((resolve) => setTimeout(() => {
   callback && callback();
   resolve();
 }, duration));
 
-const createMockNote = () => {
-  const id = Math.random();
-  return {
-    id,
-    title: 'Title of ' + id,
-    content: 'Content of ' + id,
-  }
-};
-const mockNotes = [
-  createMockNote(),
-  createMockNote(),
-  createMockNote(),
-  createMockNote(),
-  createMockNote(),
-  createMockNote(),
-  createMockNote(),
-  createMockNote(),
-  createMockNote()
-];
+
