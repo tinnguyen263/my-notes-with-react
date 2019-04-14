@@ -3,8 +3,7 @@ import Note from './Note';
 import {getPosition, getSize, moveElement, resizeElement} from "../utils/element";
 import {createExpandAnimation} from "../utils/animations";
 import { connect } from 'react-redux'
-
-
+import {wait} from "../utils/timer";
 
 const mapStateToProps = state => ({
     notes: state.data.notes
@@ -114,10 +113,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(class NoteList exten
     return expandAnimation.startReverse()
   }
 })
-
-const wait = (duration, callback) => new Promise((resolve) => setTimeout(() => {
-  callback && callback();
-  resolve();
-}, duration));
 
 
