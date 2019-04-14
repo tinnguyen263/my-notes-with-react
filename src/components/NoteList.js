@@ -1,37 +1,45 @@
 import React, {Component} from 'react';
 import Note from './Note';
-import {getPosition, getSize, moveElement, resizeElement} from "../utils/element";
-import {createExpandAnimation} from "../utils/animations";
+import {
+  getPosition,
+  getSize,
+  moveElement,
+  resizeElement,
+} from '../utils/element';
+import {createExpandAnimation} from '../utils/animations';
 
 export default class NoteList extends Component {
-
   constructor(props) {
     super(props);
     this.containerRef = React.createRef();
     this.state = {
       notes: mockNotes,
       selectedNote: null,
-      selectedNoteElement: null
+      selectedNoteElement: null,
     };
     this.overlayRef = React.createRef();
   }
 
   render() {
-    const computeNoteClasses = note => this.state.selectedNote ? note.id === this.state.selectedNote.id ? 'selected' : 'not-selected' : '';
+    const computeNoteClasses = (note) => this.state.selectedNote ?
+        note.id === this.state.selectedNote.id ? 'selected' : 'not-selected' :
+        '';
     return (
-      <div className={`note-list ${this.state.selectedNote && 'has-selected'} ${this.props.className}`}
-           ref={this.containerRef}>
-        {this.state.notes.map(note =>
+      <div className={`note-list ${this.state.selectedNote &&
+        'has-selected'} ${this.props.className}`}
+      ref={this.containerRef}>
+        {this.state.notes.map((note) =>
           <Note key={note.id}
-                id={note.id}
-                note-data={note}
-                className={computeNoteClasses(note)}
-                onClick={e => this.selectNote(note, e.target)}/>)
+            id={note.id}
+            note-data={note}
+            className={computeNoteClasses(note)}
+            onClick={(e) => this.selectNote(note, e.target)}/>)
         }
         <div className="overlay-note hide no-transition" ref={this.overlayRef}
-             onClick={e => this.deSelectNote(this.state.selectedNote, e.target)}/>
+          onClick={(e) => this.deSelectNote(this.state.selectedNote,
+              e.target)}/>
       </div>
-    )
+    );
   }
 
   async setStateAsync(newState, callback) {
@@ -39,14 +47,14 @@ export default class NoteList extends Component {
       this.setState(newState, () => {
         callback && callback();
         resolve();
-      })
-    })
+      });
+    });
   }
 
   async selectNote(note, element) {
     await this.setStateAsync({
       selectedNote: note,
-      selectedNoteElement: element
+      selectedNoteElement: element,
     });
     await this._showOverlay();
     await this._expandOverlay();
@@ -57,7 +65,7 @@ export default class NoteList extends Component {
     await this._hideOverlay();
     await this.setStateAsync({
       selectedNote: null,
-      selectedNoteElement: null
+      selectedNoteElement: null,
     });
   }
 
@@ -75,7 +83,7 @@ export default class NoteList extends Component {
     // the show it with animation
     overlay.classList.remove('no-transition');
     overlay.classList.remove('hide');
-    return wait(200)
+    return wait(200);
   }
 
   async _hideOverlay() {
@@ -96,7 +104,7 @@ export default class NoteList extends Component {
     const container = this.containerRef.current;
     const overlay = this.overlayRef.current;
     const expandAnimation = createExpandAnimation(card, overlay, container);
-    return expandAnimation.start()
+    return expandAnimation.start();
   }
 
   async _collapseOverlay() {
@@ -104,7 +112,7 @@ export default class NoteList extends Component {
     const container = this.containerRef.current;
     const overlay = this.overlayRef.current;
     const expandAnimation = createExpandAnimation(card, overlay, container);
-    return expandAnimation.startReverse()
+    return expandAnimation.startReverse();
   }
 }
 
@@ -119,7 +127,7 @@ const createMockNote = () => {
     id,
     title: 'Title of ' + id,
     content: 'Content of ' + id,
-  }
+  };
 };
 const mockNotes = [
   createMockNote(),
@@ -130,5 +138,5 @@ const mockNotes = [
   createMockNote(),
   createMockNote(),
   createMockNote(),
-  createMockNote()
+  createMockNote(),
 ];
