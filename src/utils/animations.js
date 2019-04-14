@@ -1,7 +1,8 @@
-import {getPosition, getSize, moveElement, resizeElement} from "./element";
-import {Animation, TimingFunctions} from "./animation";
+import {getPosition, getSize, moveElement, resizeElement} from './element';
+import {Animation, TimingFunctions} from './animation';
 
-export const createExpandAnimation = (originalElement, targetElement, containerElement) => {
+export const createExpandAnimation = (
+    originalElement, targetElement, containerElement) => {
   const containerSize = getSize(containerElement);
   const originalPosition = getPosition(originalElement);
   const originalSize = getSize(originalElement);
@@ -18,7 +19,7 @@ export const createExpandAnimation = (originalElement, targetElement, containerE
     return spaceToAdd < maximumSpace ? spaceToAdd : maximumSpace;
   };
 
-  const step = progress => {
+  const step = (progress) => {
     const newOverlayExpandSize = {
       top: calculateSpaceToAdd(progress, maximumChangeSize.top),
       right: calculateSpaceToAdd(progress, maximumChangeSize.right),
@@ -27,11 +28,13 @@ export const createExpandAnimation = (originalElement, targetElement, containerE
     };
     const newOverlayPosition = {
       top: originalPosition.top - newOverlayExpandSize.top,
-      left: originalPosition.left - newOverlayExpandSize.left
+      left: originalPosition.left - newOverlayExpandSize.left,
     };
     const newSize = {
-      width: originalSize.width + (newOverlayExpandSize.left + newOverlayExpandSize.right),
-      height: originalSize.height + (newOverlayExpandSize.top + newOverlayExpandSize.bottom)
+      width: originalSize.width +
+          (newOverlayExpandSize.left + newOverlayExpandSize.right),
+      height: originalSize.height +
+          (newOverlayExpandSize.top + newOverlayExpandSize.bottom),
     };
     resizeElement(targetElement, newSize.width, newSize.height);
     moveElement(targetElement, newOverlayPosition.top, newOverlayPosition.left);
