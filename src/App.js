@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import Content from './components/Content'
-import Header from "./components/Header";
-import Actions from "./components/Actions";
-import Action from "./components/Action";
-import AppName from "./components/AppName";
-import AppRouter from "./AppRouter";
+import React, {Component} from 'react';
+import Content from './components/Content';
+import Header from './components/Header';
+import Actions from './components/Actions';
+import Action from './components/Action';
+import AppName from './components/AppName';
+import AppRouter from './AppRouter';
 
 export default class App extends Component {
   render() {
