@@ -1,19 +1,19 @@
 import React, {Component} from 'react';
 import Note from './Note';
-import {
-  getPosition,
-  getSize,
-  moveElement,
-  resizeElement,
-} from '../utils/element';
+import {getPosition, getSize, moveElement, resizeElement} from '../utils/element';
 import {createExpandAnimation} from '../utils/animations';
+import {connect} from 'react-redux';
+import {wait} from '../utils/timer';
 
-export default class NoteList extends Component {
+const mapStateToProps = (state) => ({
+  notes: state.data.notes,
+});
+
+export default connect(mapStateToProps)(class NoteList extends Component {
   constructor(props) {
     super(props);
     this.containerRef = React.createRef();
     this.state = {
-      notes: mockNotes,
       selectedNote: null,
       selectedNoteElement: null,
     };
@@ -22,13 +22,12 @@ export default class NoteList extends Component {
 
   render() {
     const computeNoteClasses = (note) => this.state.selectedNote ?
-        note.id === this.state.selectedNote.id ? 'selected' : 'not-selected' :
+        (note.id === this.state.selectedNote.id) ? 'selected' : 'not-selected' :
         '';
     return (
-      <div className={`note-list ${this.state.selectedNote &&
-        'has-selected'} ${this.props.className}`}
-      ref={this.containerRef}>
-        {this.state.notes.map((note) =>
+      <div className={`note-list ${this.state.selectedNote && 'has-selected'} ${this.props.className}`}
+        ref={this.containerRef}>
+        {this.props.notes.map((note) =>
           <Note key={note.id}
             id={note.id}
             note-data={note}
@@ -36,8 +35,7 @@ export default class NoteList extends Component {
             onClick={(e) => this.selectNote(note, e.target)}/>)
         }
         <div className="overlay-note hide no-transition" ref={this.overlayRef}
-          onClick={(e) => this.deSelectNote(this.state.selectedNote,
-              e.target)}/>
+          onClick={(e) => this.deSelectNote(this.state.selectedNote, e.target)}/>
       </div>
     );
   }
@@ -114,29 +112,6 @@ export default class NoteList extends Component {
     const expandAnimation = createExpandAnimation(card, overlay, container);
     return expandAnimation.startReverse();
   }
-}
+});
 
-const wait = (duration, callback) => new Promise((resolve) => setTimeout(() => {
-  callback && callback();
-  resolve();
-}, duration));
 
-const createMockNote = () => {
-  const id = Math.random();
-  return {
-    id,
-    title: 'Title of ' + id,
-    content: 'Content of ' + id,
-  };
-};
-const mockNotes = [
-  createMockNote(),
-  createMockNote(),
-  createMockNote(),
-  createMockNote(),
-  createMockNote(),
-  createMockNote(),
-  createMockNote(),
-  createMockNote(),
-  createMockNote(),
-];
