@@ -1,7 +1,7 @@
 import {initialState} from "./state";
 import {ActionTypes} from './action-types'
 import {combineReducers} from "redux";
-import Collection from "../../utils/Collection";
+import {ArrayCollection} from "../../utils/collection";
 
 const appReducer = (state = initialState.app, action) => {
   switch (action.type) {
@@ -13,11 +13,11 @@ const appReducer = (state = initialState.app, action) => {
 const noteReducer = (state = initialState.data.notes, action) => {
   switch (action.type) {
     case ActionTypes.DATA_NOTE_CREATE:
-      return Collection.addItem(state, action.payload);
+      return ArrayCollection.of(state).addItem(action.payload);
     case ActionTypes.DATA_NOTE_UPDATE:
-      return Collection.updateItem(state, action.payload);
+      return ArrayCollection.of(state).updateItem(action.payload);
     case ActionTypes.DATA_NOTE_DELETE:
-      return Collection.deleteItem(state, action.payload);
+      return ArrayCollection.of(state).deleteItem(action.payload);
     default:
       return state;
   }
